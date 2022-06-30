@@ -1,0 +1,14 @@
+2022-06-24 17:37:38,747 - INFO - Loading data...
+2022-06-24 17:37:41,756 - WARNING - Compute Engine Metadata server unavailable on attempt 1 of 3. Reason: timed out
+2022-06-24 17:37:44,757 - WARNING - Compute Engine Metadata server unavailable on attempt 2 of 3. Reason: timed out
+2022-06-24 17:37:44,759 - WARNING - Compute Engine Metadata server unavailable on attempt 3 of 3. Reason: [Errno 64] Host is down
+2022-06-24 17:37:44,759 - WARNING - Authentication failed using Compute Engine authentication due to unavailable metadata server.
+2022-06-24 17:44:27,387 - INFO - Loading data...
+2022-06-24 17:48:21,985 - INFO - Loading data...
+2022-06-24 17:48:22,006 - INFO - None
+2022-06-24 17:48:22,007 - INFO - 
+Class Distribution: 
+example_label        1
+example_label_two    1
+Name: label, dtype: int64
+2022-06-24 17:48:22,007 - INFO - Preprocessing...
