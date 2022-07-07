@@ -26,6 +26,8 @@ DEBUG = os.getenv('DEBUG') == 'True'
 BOT_ID = os.getenv('BOT_ID')
 PORT = int(os.getenv('PORT'))
 
+print(SLACK_API_TOKEN,SIGNING_SECRET)
+
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
@@ -74,5 +76,5 @@ if __name__ == "__main__":
                         filename='./logs/app_logs/' + date.today().strftime("%d-%m-%Y") + '.log',
                         filemode='a')
 
-    logging.info("App is runnig!")
+    logging.info("App is running!")
     app.start(port=5050)

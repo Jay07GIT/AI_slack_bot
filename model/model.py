@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     # Load data
     logging.info("Loading data...")
-    df = load_data_from_bq(query = """select sentence, label from `project_id.dataset_id.table_id` where label is not null;""")
+    df = load_data_from_csv_file(file_path = """../data/sample.csv""")
 
     # Preprocessing
     logging.info("Preprocessing...")

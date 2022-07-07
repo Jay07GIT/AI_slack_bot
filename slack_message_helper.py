@@ -73,7 +73,7 @@ class SlackMessageHelper:
         creds = ServiceAccountCredentials.from_json_keyfile_name(CLIENT_SECRET_FILE, scope)
         gs_client = gspread.authorize(creds)
 
-        sheet = gs_client.open("<>-bot-messages").get_worksheet(0)
+        sheet = gs_client.open("aislackbot-bot-messages").get_worksheet(0)
 
         updating_message_cell = 'C' + str(len(sheet.col_values(3))+1) ## message column
         sheet.update(updating_message_cell, text)

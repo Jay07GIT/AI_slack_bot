@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-cd ~/<>
+cd ~/aislackbot
 docker-compose down
-/Users/<>/miniconda3/envs/<>/bin/python /Users/<>/Documents/Projects/demo/<>/model/model.py
+/Users/jvelku299/miniconda3/envs/aislackbot/bin/python /Users/jvelku299/Documents/Projects/demo/AI_slack_bot/aislackbot/model/model.py
 docker-compose build --no-cache
 docker-compose up -d

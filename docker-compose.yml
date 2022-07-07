@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    container_name: <>
+    container_name: aislackbot
     build: 
       context: .  
     restart: always
@@ -13,11 +13,11 @@ services:
       - ./model:/app/model
       - ./data:/app/data
   nginx:
-    container_name: <>-nginx
+    container_name: aislackbot-nginx
     restart: always
     build: 
       context: ./nginx
     ports:
-      - "5001:80"
+      - "5051:80"
     depends_on:
       - web
