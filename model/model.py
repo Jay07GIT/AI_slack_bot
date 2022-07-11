@@ -60,6 +60,7 @@ def load_data_from_bq(query) -> pd.DataFrame:
 
 def preprocessing(msg: str) -> list:
     """Apply preprocessing on the data"""
+    print("messg",msg)
 
     # Cast to lowercase
     msg = msg.lower()

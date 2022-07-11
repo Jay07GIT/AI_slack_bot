@@ -25,12 +25,11 @@ class SlackMessageHelper:
 
     def get_response(self, message):
         """Returns appropriate response for the given message"""
+        print("message",message)
 
-        intent, prob = authorization_helper._analyze_message(message)
+        intent, prob = self._analyze_message(message)
+        print("messe",message,intent, prob)
         logging.info(f"Message: {message} - Prediction: {intent} - Probability: {prob}")
-
-        if DEBUG:
-            return f"Prediction: {intent}", intent, prob
 
         if intent == 'authorization':
             # TODO Take action here
@@ -44,25 +43,42 @@ class SlackMessageHelper:
         elif  intent == 'troubleshooting':
             # TODO Take action here
             return 'Response message for troubleshooting.', intent, prob
-        elif  intent == 'no-reply':
+        elif  intent == 'noreply':
+            print("prob",prob)
             # TODO Take action here
-            return '', intent, prob
+            return 'no reply', intent, prob
+        elif  intent == 'message':
+            # TODO Take action here
+            print("prob",prob)
+            return 'how may help u', intent, prob    
 
     def _analyze_message(self, message):
         """Predict the message's intent by using model"""
+        print("mes",message)
 
         message = model.preprocessing(message)
+        print("mess",message)
 
         if 'tfidf' in self.best_model:
+            print("self",self.best_model)
             tfidf_matrix = self.vectorizer.transform([message])
+            print("tfidf_matrix",tfidf_matrix)
             prediction = self.loaded_model.predict(tfidf_matrix)
+            print("prediction",prediction)
             prediction_probability = np.max(self.loaded_model.predict_proba(tfidf_matrix))
+            print("prediction_probability",prediction_probability)
         elif 'count' in self.best_model:
+            print("count",self.best_model)
             count_vector = self.count_vectorizer.transform([message])
             prediction = self.loaded_model.predict(count_vector)
             prediction_probability = np.max(self.loaded_model.predict_proba(count_vector))
+            print("count1",self.best_model)
+
+        print("encoded_intents====",self.encoded_intents['label_enc'])
+        print("prediction====",prediction[0])
 
         prediction = self.encoded_intents[self.encoded_intents['label_enc'] == prediction[0]]['label'].iloc[0]
+        print("prediction",prediction)
 
         return prediction, prediction_probability
 
