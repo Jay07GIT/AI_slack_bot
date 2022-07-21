@@ -2,7 +2,7 @@ AI Slack bot
 
 
 Steps to setup env.
-Install Conda:
+1. Install Conda:
 https://docs.conda.io/en/latest/miniconda.html (download sh file and give command ./<conda.sh file name>)
 Check the conda path in your local machine- User/<user name>/miniconda3/envs
 2. Install dependencies:
