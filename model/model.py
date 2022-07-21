@@ -38,7 +38,7 @@ def load_data_from_csv_file(file_path: str) -> pd.DataFrame:
     df = pd.read_csv(file_path)
 
     logging.info(df.info())
-    logging.info(f"\nClass Distribution: \n{df['label'].value_counts()}")
+    logging.info(f"\nClass Distribution: \n{df['category'].value_counts()}")
 
     return df
 
@@ -53,14 +53,13 @@ def load_data_from_bq(query) -> pd.DataFrame:
     df = query_job.result().to_dataframe()
 
     logging.info(df.info())
-    logging.info(f"\nClass Distribution: \n{df['label'].value_counts()}")
+    logging.info(f"\nClass Distribution: \n{df['category'].value_counts()}")
 
     return df
 
 
 def preprocessing(msg: str) -> list:
     """Apply preprocessing on the data"""
-    print("messg",msg)
 
     # Cast to lowercase
     msg = msg.lower()
@@ -86,6 +85,7 @@ def preprocessing(msg: str) -> list:
 
 def get_tfidf(X_train: pd.DataFrame, X_test=None, ngram_range=(1,1), analyzer='word') -> pd.DataFrame:
     """Extract tf-idf features from the corpus"""
+
 
     # Initialize a Tf-idf Vectorizer
     vectorizer = TfidfVectorizer(ngram_range=ngram_range, analyzer=analyzer)
@@ -232,21 +232,21 @@ if __name__ == '__main__':
 
     # Load data
     logging.info("Loading data...")
-    df = load_data_from_csv_file(file_path = """../data/sample.csv""")
+    df = load_data_from_csv_file(file_path = """../data/questions.csv""")
 
     # Preprocessing
     logging.info("Preprocessing...")
 
     le = LabelEncoder()
-    df["label_enc"] = le.fit_transform(df["label"])
+    df["category_enc"] = le.fit_transform(df["category"])
 
-    reduced = df.drop("sentence", axis=1).drop_duplicates().sort_values("label_enc")
+    reduced = df.drop("question", axis=1).drop_duplicates().sort_values("category_enc")
     logging.info(f"Encoded labels:\n{reduced}\n")
-    reduced.to_csv('../data/encoded_labels.csv', index=False)
+    reduced.to_csv('../data/encoded_categories.csv', index=False)
 
     # Get features and targets
-    X = df['sentence']
-    y = df['label_enc']
+    X = df['question']
+    y = df['category_enc']
 
 
     ################################## TRAINING ################################
@@ -260,7 +260,7 @@ if __name__ == '__main__':
     vectorizer = CountVectorizer()
     x_count = vectorizer.fit_transform(X)
 
-    X_train, X_test, y_train, y_test = train_test_split(x_count, y, random_state=1, test_size=0.33, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(x_count, y, random_state=1, test_size=0.33,stratify=y)
 
     # Count Vectors + Logistic Regression
     scores["count_vectors_logistic_regression"] = logistic_regression_model(X_train, X_test, y_train, y_test)
@@ -360,30 +360,30 @@ if __name__ == '__main__':
     MODEL_TEST_MODE = False
 
     # Get the most successful model
-    best_model = max(scores.items(), key=operator.itemgetter(1))[0]
+    trained_model = max(scores.items(), key=operator.itemgetter(1))[0]
 
-    with open("../data/best_model.txt","w") as f:
-        f.write(best_model)
+    with open("../data/trained_model.txt","w") as f:
+        f.write(trained_model)
 
     logging.info("################################################################# \n")
-    logging.info(f"Best Model: {best_model}\n")
+    logging.info(f"Best Model: {trained_model}\n")
 
     # Train the most successful model with all data
     logging.info("Training with all data")
         
-    if 'char_level_tfidf_' in best_model:
+    if 'char_level_tfidf_' in trained_model:
         tfidf, _ = get_tfidf(X, ngram_range = (2,3), analyzer = "char")
-        locals()[best_model.replace("char_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
-    elif 'ngram_level_tfidf_' in best_model:
+        locals()[trained_model.replace("char_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
+    elif 'ngram_level_tfidf_' in trained_model:
         tfidf, _ = get_tfidf(X, ngram_range = (2,3), analyzer = "char")
-        locals()[best_model.replace("ngram_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
-    elif 'word_level_tfidf_' in best_model:
+        locals()[trained_model.replace("ngram_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
+    elif 'word_level_tfidf_' in trained_model:
         tfidf, _ = get_tfidf(X)
-        locals()[best_model.replace("word_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
-    elif 'count_vectors_' in best_model:
+        locals()[trained_model.replace("word_level_tfidf_", "") + "_model"](X_train=tfidf, y_train=y)
+    elif 'count_vectors_' in trained_model:
         vectorizer = CountVectorizer()
         pickle.dump(vectorizer, open("count-vectorizer.pkl", "wb"))
         count_vectors = vectorizer.fit_transform(X)
-        locals()[best_model.replace("count_vectors_", "") + "_model"](X_train=count_vectors, y_train=y)
+        locals()[trained_model.replace("count_vectors_", "") + "_model"](X_train=count_vectors, y_train=y)
 
     logging.info("\n###########################  FINISHED ########################### ")
