@@ -1,1 +1,7 @@
-.env
+logs
+data
+model/__pycache__
+model/count-vectorizer.pkl
+model/model.pkl
+model/tfidf-vectorizer.pkl
+__pycache__
