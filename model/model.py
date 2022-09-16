@@ -245,7 +245,7 @@ if __name__ == '__main__':
     reduced.to_csv('../data/encoded_categories.csv', index=False)
 
     # Get features and targets
-    X = df['question']
+    X = df['question'].values.astype('U')
     y = df['category_enc']
 
 

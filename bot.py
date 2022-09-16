@@ -35,10 +35,6 @@ app = App(token=SLACK_API_TOKEN, signing_secret=SIGNING_SECRET)
 
 slack_message_helper = SlackMessageHelper()
 
-@app.event("app_mention") 
-def event_test(say):     
-    say("Hi there!")
-
 @app.event("message")
 def message(payload, say, client):
     channel_id = payload['channel']
@@ -53,7 +49,6 @@ def message(payload, say, client):
         print("Error fetching conversations: {}".format(e))
     user_name = result["user"]["real_name"]
     text = payload['text']
-    say("Hi there!")
     no_reply_team_members = ["jay.applemai"]
 
     if 'parent_user_id' not in payload.keys() and user_name not in no_reply_team_members:
