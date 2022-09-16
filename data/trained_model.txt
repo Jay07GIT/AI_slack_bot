@@ -1,1 +1,1 @@
-char_level_tfidf_random_forest
+word_level_tfidf_logistic_regression

@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 import csv
 from dotenv import load_dotenv
 import pandas as pd
@@ -12,6 +13,7 @@ from slack_sdk.errors import SlackApiError
 load_dotenv()
 SLACK_USER_TOKEN = os.getenv('SLACK_USER_TOKEN')
 LISTENING_CHANNELS = os.getenv('LISTENING_CHANNELS')
+ADMIN_USERS = json.loads(os.environ['ADMIN_USERS'])
 
 print(SLACK_USER_TOKEN)
 client = WebClient(token=SLACK_USER_TOKEN)
@@ -38,21 +40,28 @@ try:
         for message in range(len(result["messages"])):
             slackMessage = result["messages"][message]
             slackMessageTs = slackMessage["ts"]
-            resultSlackReply = client.conversations_replies( channel = conversation_id, ts=slackMessageTs)
+            resultSlackReply = client.conversations_replies(channel = conversation_id, ts=slackMessageTs)
 
             for message in range(len(resultSlackReply["messages"])):
-                slackMessageReply= resultSlackReply["messages"][message]
+                slackMessageReply = resultSlackReply["messages"][message]
                 slackReplyTs = slackMessageReply["ts"]            
 
-                if slackMessageTs!= slackReplyTs :
-                        slackReply=slackMessageReply["text"]
+                slackQues = ""
+                slackReply = ""
+
+                # Parent of thread/Main question
+                if slackMessageTs == slackReplyTs :
+                    slackQues = slackMessageReply["text"]
                     
-                else :                   
-                        slackParent=slackMessageReply["text"]
+                # Thread answer
+                elif slackMessageReply.__contains__("user") and slackMessageReply["user"] in ADMIN_USERS :                   
+                    slackReply = slackMessageReply["text"]
 
-                finalMessages.append({slackReply,slackParent})
+                # Thread question
+                else :
+                    slackQues = slackMessageReply["text"]
 
-    
+                finalMessages.append({slackReply,slackQues})
                 df = pd.DataFrame(finalMessages, columns=['Answers', 'Questions'])   
 
         df.to_csv(f1, header=True)     
