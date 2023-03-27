@@ -66,7 +66,6 @@ class SlackMessageHelper:
             prediction_probability = np.max(self.loaded_model.predict_proba(count_vector))
 
         prediction = self.encoded_intents[self.encoded_intents['category_enc'] == prediction[0]]['category'].iloc[0]
-
         return prediction, prediction_probability
 
     def get_sheet_cover(self, text, intent, channel, user_name, ts, prob):

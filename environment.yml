@@ -16,7 +16,7 @@ dependencies:
     - gunicorn
     - sklearn
     - gspread
-    - xgboost=1.4.2
+    - xgboost==1.4.2
     - pyarrow
     - pandas
     - nltk

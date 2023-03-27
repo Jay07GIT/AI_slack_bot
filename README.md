@@ -7,8 +7,8 @@ https://docs.conda.io/en/latest/miniconda.html (download sh file and give comman
 Check the conda path in your local machine- User/<user name>/miniconda3/envs
 2. Install dependencies:
  Cd <project folder>
- conda env create -f=environment.yaml
- conda activate aislackbot
+conda env create -f environment.yml
+conda activate aislackbot
 3. Setup .env file with bot credentials.
      run ./train.sh
 4. Install ngrok.
