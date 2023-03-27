@@ -245,9 +245,8 @@ if __name__ == '__main__':
     reduced.to_csv('../data/encoded_categories.csv', index=False)
 
     # Get features and targets
-    X = df['question']
+    X = df['question'].values.astype('U')
     y = df['category_enc']
-
 
     ################################## TRAINING ################################
 
@@ -260,7 +259,7 @@ if __name__ == '__main__':
     vectorizer = CountVectorizer()
     x_count = vectorizer.fit_transform(X)
 
-    X_train, X_test, y_train, y_test = train_test_split(x_count, y, random_state=1, test_size=0.33,stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(x_count, y, random_state=1, test_size=0.33, stratify=y)
 
     # Count Vectors + Logistic Regression
     scores["count_vectors_logistic_regression"] = logistic_regression_model(X_train, X_test, y_train, y_test)

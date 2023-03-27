@@ -4,8 +4,9 @@ from dotenv import load_dotenv
 from slack_bolt import App
 from datetime import date
 from model import model
+from pandas import DataFrame, concat
 from slack_message_helper import SlackMessageHelper
-import pandas as pd
+import pandas as pd 
 import numpy as np
 import subprocess
 import datetime
@@ -35,10 +36,6 @@ app = App(token=SLACK_API_TOKEN, signing_secret=SIGNING_SECRET)
 
 slack_message_helper = SlackMessageHelper()
 
-@app.event("app_mention") 
-def event_test(say):     
-    say("Hi there!")
-
 @app.event("message")
 def message(payload, say, client):
     channel_id = payload['channel']
@@ -53,7 +50,6 @@ def message(payload, say, client):
         print("Error fetching conversations: {}".format(e))
     user_name = result["user"]["real_name"]
     text = payload['text']
-    say("Hi there!")
     no_reply_team_members = ["jay.applemai"]
 
     if 'parent_user_id' not in payload.keys() and user_name not in no_reply_team_members:
@@ -62,7 +58,13 @@ def message(payload, say, client):
                 ts = payload['event_ts']
 
                 res, intent, prob = slack_message_helper.get_response(text)
-
+                csv = pd.read_csv("""./data/questions.csv""")
+                category_index = csv[csv['category'] == intent].index[2]
+                category_enc = csv.loc[category_index, ['category_enc']].to_string(index = False)
+                df = pd.DataFrame(csv)
+                newLine = DataFrame({'category': intent,'category_enc' : category_enc,'question': text}, index=[csv[csv['category'] == intent].index[2]])
+                newDf= concat([df.iloc[:csv[csv['category'] == intent].index[2]], newLine, df.iloc[csv[csv['category'] == intent].index[2]:]]).reset_index(drop=True)
+                newDf.to_csv('./data/questions.csv',index=False)
                 if DEBUG:
                     say(thread_ts=ts, text=res)
                 else:
@@ -75,7 +77,6 @@ def message(payload, say, client):
             if BOT_ID != user_id and text:
 
                 res, intent, prob = slack_message_helper.get_response(text)
-
                 ts = payload['event_ts']
 
                 slack_message_helper.get_sheet_cover(text, intent, channel_id, user_name, ts, prob)
@@ -85,5 +86,5 @@ if __name__ == "__main__":
                         filename='./logs/app_logs/' + date.today().strftime("%d-%m-%Y") + '.log',
                         filemode='a')
 
-    logging.info("App is running!")
+    logging.info("Bot is running successfully!")
     app.start(port=5050)
