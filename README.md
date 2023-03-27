@@ -29,7 +29,7 @@ LISTENING_CHANNELS=
 BOT_ID=
 ADMIN_USERS='[""]'
 ```
-run ```sh ./train.sh ``` <br />
+run ``` ./train.sh ``` <br />
 
 4. Ngrok setup
 > this step help us to run the port in public fqdn which we can get event response from slack.
